@@ -1,0 +1,192 @@
+﻿@model Chromesthesia.ViewModels.Twitter.IndexViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>chro·mes·the·si·a</title>
+    @Styles.Render("~/Content/css")
+    <link href="~/textillate/assets/animate.css" rel="stylesheet" />
+    <link href="~/Content/color-animation.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/knockout")
+    <script type="text/javascript" src="~/textillate/assets/jquery.fittext.js"></script>
+    <script type="text/javascript" src="~/textillate/assets/jquery.lettering.js"></script>
+    <script type="text/javascript" src="~/textillate/jquery.textillate.js"></script>
+</head>
+<body class="">
+    <div class="progress progress-fixed progress-striped active" data-bind="toggle: isLoading">
+        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
+    </div>
+
+    <header>
+        <nav class="navbar navbar-transparent" role="navigation">
+            <div class="container">
+                <div class="navbar-left">
+                    <h3>
+                        <span class="text-muted">chro·mes·the·si·a</span>
+                        <span data-bind="text: query"></span>
+                    </h3>
+                </div>
+
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-cog"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" data-bind="click: toggleImages">
+                                        <span class="pull-right text-muted" data-bind="if: showImages">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </span>
+                                        Show images
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div>
+        <section class="container" role="main">
+            <div class="media" data-bind="with: activeTweet">
+                <div class="pull-left" style="width: 64px; height: 64px;">
+                    <img alt="" class="media-object img-thumbnail" style="display: none;" data-bind="attr: { src: User.ProfileImageUrlHttps, alt: User.Identifier.ScreenName, title: User.Identifier.ScreenName }" />
+                </div>
+                <article class="media-body">
+                    <h2 class="media-heading hidden" data-bind="html: Text"></h2>
+                    <aside style="display: none;">
+                        <a href="#" target="_blank" data-bind="attr: { href: 'https://www.twitter.com/' + User.Identifier.ScreenName + '/status/' + StatusID }">
+                            <time data-bind="text: new Date(CreatedAt).toLocaleString()"></time>
+                        </a>
+                        <span class="text-muted">
+                            <span class="bullet">&bull;</span>
+                            <span data-bind="attr: { title: RetweetCount + ' retweets.' }">
+                                <span class="glyphicon glyphicon-retweet"></span>
+                                <span data-bind="text: RetweetCount"></span>
+                            </span>
+                            <span class="bullet">&bull;</span>
+                            <span data-bind="attr: { title: FavoriteCount + ' favorites.' }">
+                                <span class="glyphicon glyphicon-heart"></span>
+                                <span data-bind="text: FavoriteCount"></span>
+                            </span>
+                        </span>
+                    </aside>
+                    <br />
+                    <aside style="display: none;" data-bind="if: $root.showImages">
+                        <div data-bind="foreach: Entities.MediaEntities">
+                            <a href="#" target="_blank" data-bind="attr: { href: MediaUrlHttps }">
+                                <img class="img-thumbnail img-responsive" alt="" data-bind="attr: { src: MediaUrlHttps }" />
+                            </a>
+                        </div>
+                    </aside>
+                </article>
+            </div>
+        </section>
+    </div>
+    <script type="text/javascript">
+        (function ($, window, ko) {
+            'use-strict';
+
+            function ViewModel() {
+                var self = this;
+                self.query = ko.observable('@Model.Query');
+                self.tweets = ko.observableArray([]);
+                self.activeTweet = ko.observable();
+                self.activeTweet.subscribe(function () {
+                    //$('.media-heading').css('display', 'none');
+                }, null, "beforeChange");
+
+                self.next = function () {
+                    if (self.tweets().length == 0) {
+                        // Load next.
+                    } else {
+                        self.activeTweet(self.tweets.pop());
+
+                        $('.media-heading').on('start.tlt', function () {
+                            $(this).removeClass('hidden');
+                        });
+
+                        $('.media-heading').on('inAnimationEnd.tlt', function () {
+                            $('.media .media-object').fadeIn(1500);
+                            $('.media-body > aside').fadeIn(1500);
+                        });
+
+                        $('.media-heading').on('outAnimationBegin.tlt', function () {
+                            $('.media img.media-object').fadeOut(1500);
+                            $('.media-body > aside').fadeOut(1500);
+                        });
+
+                        $('.media-heading').on('end.tlt', function () {
+                            $(this).addClass('hidden');
+                            self.next();
+                        });
+
+                        $('.media-heading').textillate({
+                            loop: false,
+                            minDisplayTime: 5000,
+                            in: {
+                                effect: 'fadeInLeft',
+                                sync: false,
+                                shuffle: false,
+                                delay: 35
+                            },
+                            out: {
+                                effect: 'hinge',
+                                sync: false,
+                                shuffle: false,
+                                delay: 35
+                            }
+                        });
+                    }
+                };
+
+                // Show images.
+                self.showImages = ko.observable(true);
+                self.toggleImages = function () {
+                    self.showImages(!self.showImages());
+                };
+
+                self.load = function () {
+                    if (!self.query()) {
+                        return;
+                    }
+
+                    self.isLoading = ko.observable(true);
+
+                    $.getJSON('/Tweets/' + window.encodeURIComponent(self.query()))
+                        .complete(function () { self.isLoading(false); })
+                        .done(function (data) {
+                            self.tweets(data);
+                            self.tweets.reverse();
+                            self.next();
+                        });
+                };
+
+                self.load();
+            }
+
+            ko.bindingHandlers.toggle = {
+                init: function (element, valueAccessor) {
+                    var value = valueAccessor();
+                    $(element).toggle(ko.unwrap(value));
+                },
+                update: function (element, valueAccessor) {
+                    var value = valueAccessor();
+                    $(element).toggle(ko.unwrap(value));
+                }
+            };
+
+            ko.applyBindings(new ViewModel());
+        }(jQuery, window, ko));
+    </script>
+</body>
+</html>

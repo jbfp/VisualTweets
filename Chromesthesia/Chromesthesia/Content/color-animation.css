@@ -1,0 +1,121 @@
+﻿.unicorn {
+    -moz-animation: colorRotate 60s linear 0 infinite;
+    -o-animation: colorRotate 60s linear 0 infinite;
+    -webkit-animation: colorRotate 60s linear 0 infinite;
+    -ms-animation: colorRotate 60s linear 0 infinite;
+    animation: colorRotate 60s linear 0 infinite;
+}
+
+@-moz-keyframes colorRotate {
+    from {
+        background-color: hsl(0, 50%, 75%);
+    }
+
+    12.5% {
+        background-color: hsl(45, 50%, 75%);
+    }
+
+    25% {
+        background-color: hsl(90, 50%, 75%);
+    }
+
+    37.5% {
+        background-color: hsl(135, 50%, 75%);
+    }
+
+    50% {
+        background-color: hsl(180, 50%, 75%);
+    }
+
+    62.5% {
+        background-color: hsl(225, 50%, 75%);
+    }
+
+    75% {
+        background-color: hsl(270, 50%, 75%);
+    }
+
+    87.5% {
+        background-color: hsl(315, 50%, 75%);
+    }
+
+    to {
+        background-color: hsl(360, 50%, 75%);
+    }
+}
+
+@-webkit-keyframes colorRotate {
+    from {
+        background-color: hsl(0, 50%, 75%);
+    }
+
+    12.5% {
+        background-color: hsl(45, 50%, 75%);
+    }
+
+    25% {
+        background-color: hsl(90, 50%, 75%);
+    }
+
+    37.5% {
+        background-color: hsl(135, 50%, 75%);
+    }
+
+    50% {
+        background-color: hsl(180, 50%, 75%);
+    }
+
+    62.5% {
+        background-color: hsl(225, 50%, 75%);
+    }
+
+    75% {
+        background-color: hsl(270, 50%, 75%);
+    }
+
+    87.5% {
+        background-color: hsl(315, 50%, 75%);
+    }
+
+    to {
+        background-color: hsl(360, 50%, 75%);
+    }
+}
+
+@keyframes colorRotate {
+    from {
+        background-color: hsl(0, 50%, 75%);
+    }
+
+    12.5% {
+        background-color: hsl(45, 50%, 75%);
+    }
+
+    25% {
+        background-color: hsl(90, 50%, 75%);
+    }
+
+    37.5% {
+        background-color: hsl(135, 50%, 75%);
+    }
+
+    50% {
+        background-color: hsl(180, 50%, 75%);
+    }
+
+    62.5% {
+        background-color: hsl(225, 50%, 75%);
+    }
+
+    75% {
+        background-color: hsl(270, 50%, 75%);
+    }
+
+    87.5% {
+        background-color: hsl(315, 50%, 75%);
+    }
+
+    to {
+        background-color: hsl(360, 50%, 75%);
+    }
+}
